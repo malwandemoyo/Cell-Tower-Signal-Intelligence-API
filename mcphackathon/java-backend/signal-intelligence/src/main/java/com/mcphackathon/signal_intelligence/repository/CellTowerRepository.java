@@ -1,5 +1,6 @@
 package com.mcphackathon.signal_intelligence.repository;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,10 +30,10 @@ public interface CellTowerRepository extends JpaRepository<CellTower, Long> {
     // Find by area code
     List<CellTower> findByArea(Integer area);
 
-    // Find by specific cell ID
-    Optional<CellTower> findByCell(Integer cell);
+   
+    List<CellTower> findByCell(Integer cell);
     
-    // FIXED: Use the correct Java field names (lon and lat)
+    // Find by location within bounds
     @Query("SELECT ct FROM CellTower ct WHERE ct.lon BETWEEN :minLon AND :maxLon AND ct.lat BETWEEN :minLat AND :maxLat")
     List<CellTower> findByLocationWithinBounds(@Param("minLon") Double minLon, 
                                               @Param("maxLon") Double maxLon,
@@ -55,4 +56,6 @@ public interface CellTowerRepository extends JpaRepository<CellTower, Long> {
     @Query("SELECT ct FROM CellTower ct WHERE ct.averageSignal BETWEEN :minSignal AND :maxSignal")
     List<CellTower> findByAverageSignalBetween(@Param("minSignal") Integer minSignal, 
                                               @Param("maxSignal") Integer maxSignal);
+    
+    // REMOVED: Don't need custom count method, JpaRepository already provides count()
 }

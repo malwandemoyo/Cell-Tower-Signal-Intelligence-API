@@ -1,0 +1,8 @@
+﻿target/
+!target/signal-intelligence-0.0.1-SNAPSHOT.jar
+.mvn/
+.git/
+.gitignore
+mvnw
+mvnw.cmd
+*.md

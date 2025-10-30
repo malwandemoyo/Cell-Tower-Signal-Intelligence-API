@@ -1,5 +1,6 @@
 package com.mcphackathon.signal_intelligence.config;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -24,16 +25,22 @@ public class DataLoader implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        // Load CSV data on application startup
+        
         String filePath = "src/main/resources/655.csv";
         System.out.println("Loading cell tower data from: " + filePath);
+        
+        // Check if data already exists to avoid duplicates
+        Long existingCount = cellTowerService.count();
+        if (existingCount > 0) {
+            System.out.println("Database already contains " + existingCount + " records. Skipping data load.");
+            return;
+        }
         
         List<CellTower> cellTowers = parseCsvData(filePath);
         
         if (!cellTowers.isEmpty()) {
             System.out.println("Found " + cellTowers.size() + " cell tower records");
             
-            // FIXED: Added missing method name "saveAll"
             cellTowerService.saveAll(cellTowers);
             System.out.println("Successfully loaded " + cellTowers.size() + " cell tower records into database");
         } else {
@@ -46,7 +53,6 @@ public class DataLoader implements CommandLineRunner {
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
             
-            // Your CSV doesn't have a header, so start from index 0
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 String[] data = line.split(",");
@@ -102,7 +108,6 @@ public class DataLoader implements CommandLineRunner {
         }
     }
     
-    // Method to parse Unix timestamp to LocalDateTime
     private LocalDateTime parseUnixTimestamp(String value) {
         try {
             if (value != null && !value.trim().isEmpty()) {

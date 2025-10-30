@@ -1,0 +1,41 @@
+﻿services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: mcp-postgres
+    environment:
+      - POSTGRES_DB=MCP-ISP-DB
+      - POSTGRES_USER=mcphackathon-peeps
+      - POSTGRES_PASSWORD=mcp@123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcphackathon-peeps -d MCP-ISP-DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-api
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/MCP-ISP-DB
+      - SPRING_DATASOURCE_USERNAME=mcphackathon-peeps
+      - SPRING_DATASOURCE_PASSWORD=mcp@123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:

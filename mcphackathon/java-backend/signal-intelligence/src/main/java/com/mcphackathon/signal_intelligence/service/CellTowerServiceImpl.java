@@ -29,7 +29,6 @@ public class CellTowerServiceImpl implements CellTowerService {
         return cellTowerRepository.saveAll(cellTowers);
     }
     
-    // FIXED: Implement the saveAll method properly
     @Override
     public void saveAll(List<CellTower> cellTowers) {
         cellTowerRepository.saveAll(cellTowers);
@@ -53,11 +52,7 @@ public class CellTowerServiceImpl implements CellTowerService {
         return cellTowerRepository.findById(id);
     }
     
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<CellTower> getCellTowerByCellId(Integer cellId) {
-        return cellTowerRepository.findByCell(cellId);
-    }
+   
     
     @Override
     public CellTower updateCellTower(Long id, CellTower cellTower) {
@@ -185,4 +180,20 @@ public class CellTowerServiceImpl implements CellTowerService {
     public Long getCountByRadio(String radio) {
         return cellTowerRepository.countByRadio(radio);
     }
+    
+    // FIXED: Use Long return type to match interface
+    @Override
+    @Transactional(readOnly = true)
+    public Long count() {
+        Long count = cellTowerRepository.count();
+        System.out.println("Total cell tower records count: " + count);
+        return count;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<CellTower> getCellTowerByCellId(Integer cellId) {
+        return cellTowerRepository.findByCell(cellId).stream().findFirst();
+    }
+   
 }

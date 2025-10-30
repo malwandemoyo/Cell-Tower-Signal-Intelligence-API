@@ -1,6 +1,7 @@
 package com.mcphackathon.signal_intelligence.service;
 
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -48,4 +49,7 @@ public interface CellTowerService {
     List<CellTower> getCellTowersBySignalRange(Integer minSignal, Integer maxSignal);
     
     Long getCountByRadio(String radio);
+
+    // FIXED: Use consistent method name and return type
+    Long count();
 }

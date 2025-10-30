@@ -85,12 +85,15 @@ public class CellTowerController {
     }
     
     @GetMapping("/cell/{cellId}")
-    public ResponseEntity<CellTower> getCellTowerByCellId(@PathVariable Integer cellId) {
+    public ResponseEntity<List<CellTower>> getCellTowerByCellId(@PathVariable Integer cellId) {
         Optional<CellTower> cellTower = cellTowerService.getCellTowerByCellId(cellId);
-        return cellTower.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (cellTower.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(List.of(cellTower.get()), HttpStatus.OK);
     }
-    
+
+
     // UPDATE endpoints
     @PutMapping("/{id}")
     public ResponseEntity<CellTower> updateCellTower(@PathVariable Long id, @RequestBody CellTower cellTower) {
