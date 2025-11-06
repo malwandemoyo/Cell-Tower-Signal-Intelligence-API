@@ -2,7 +2,7 @@ Here’s a **clean, professional, and visually enhanced version** of your `READM
 
 You can replace your current `mcphackathon/frontend/frontend/README.md` with this file ⬇️
 
----![Uploading 1-CELL-TOWER-POP-REG.PNG…]()
+---<img width="1360" height="647" alt="1-CELL-TOWER-POP-REG" src="https://github.com/user-attachments/assets/00e270cf-fbcc-4b55-828a-7f23e23441a6" />
 <img width="1337" height="659" alt="23" src="https://github.com/user-attachments/assets/4d47df0d-a800-4722-ba2f-58afa21b26c1" />
 
 
@@ -12,6 +12,7 @@ You can replace your current `mcphackathon/frontend/frontend/README.md` with thi
 A **modern AI-powered React dashboard** for visualizing and analyzing cellular network tower data in real time — built for intelligent telecom insights and research visualization.
 
 ---
+![Uploading 1-CELL-TOWER-POP-REG.PNG…]()
 
 ## 🖥️ Overview
 
@@ -19,6 +20,7 @@ A **modern AI-powered React dashboard** for visualizing and analyzing cellular n
 > *Main dashboard showing tower distribution, filters, and live signal metrics.*
 
 The **Network Analytics Dashboard** helps engineers, researchers, and analysts visualize tower coverage, signal strength, and performance indicators using **Google Maps**, **real-time analytics**, and **AI insights**.
+<img width="1337" height="659" alt="23" src="https://github.com/user-attachments/assets/4cebcc2e-062d-4b52-9333-1ce40c301a8c" />
 
 ---
 
@@ -35,6 +37,7 @@ The **Network Analytics Dashboard** helps engineers, researchers, and analysts v
 > *Advanced filter panel with multiple parameter options.*
 
 ---
+![Uploading Capture.PNG…]()
 
 ## 💡 How It Works
 
