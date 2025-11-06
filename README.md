@@ -357,16 +357,6 @@ api = CellTowerAPI("https://api.example.com")
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-## 📞 Support
-
-For issues and questions:
-- 📧 Contact your backend team
-- 📚 API Version: 1.0
-- 📅 Last Updated: October 2025
-
----
-
 ## 🎓 Best Practices
 
 ### Performance Tips
