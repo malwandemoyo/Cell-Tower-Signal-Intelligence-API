@@ -1,4 +1,4 @@
-// Dashboard.tsx - FINAL VERSION WITH ON-CLICK API FILTERS
+// Dashboard.tsx - FIXED VERSION WITH ON-CLICK FILTERS
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [mapVisualization, setMapVisualization] = useState<any>(null);
   
-  // Modern filter state - REMOVED AUTO-APPLY
+  // Filter state - separated UI state from applied state
   const [activeFilters, setActiveFilters] = useState({
     networkType: "all",
     signalStrength: "all",
@@ -63,6 +63,37 @@ const Dashboard: React.FC = () => {
     country: "all",
     samples: "all"
   });
+
+  // Memoized filter counts to prevent recalculation on every render
+  const filterCounts = useMemo(() => {
+    return {
+      networkType: {
+        all: towers.length,
+        LTE: towers.filter(t => t.radio === "LTE").length,
+        GSM: towers.filter(t => t.radio === "GSM").length,
+        UMTS: towers.filter(t => t.radio === "UMTS").length
+      },
+      signalStrength: {
+        all: towers.length,
+        excellent: towers.filter(t => t.averageSignal >= -70).length,
+        good: towers.filter(t => t.averageSignal >= -80 && t.averageSignal < -70).length,
+        fair: towers.filter(t => t.averageSignal >= -90 && t.averageSignal < -80).length,
+        poor: towers.filter(t => t.averageSignal < -90).length
+      },
+      country: {
+        all: towers.length,
+        "655": towers.filter(t => t.mcc === 655).length,
+        "262": towers.filter(t => t.mcc === 262).length,
+        "310": towers.filter(t => t.mcc === 310).length
+      },
+      samples: {
+        all: towers.length,
+        high: towers.filter(t => t.samples >= 50).length,
+        medium: towers.filter(t => t.samples >= 20 && t.samples < 50).length,
+        low: towers.filter(t => t.samples < 20).length
+      }
+    };
+  }, [towers]);
 
   // Signal quality helper
   const getSignalQuality = useCallback((signal: number) => {
@@ -124,34 +155,34 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
-  // Modern filter categories with API calls
-  const filterOptions = {
+  // Modern filter categories with memoized options
+  const filterOptions = useMemo(() => ({
     networkType: [
-      { id: "all", label: "All Networks", count: towers.length, icon: Wifi },
-      { id: "LTE", label: "LTE", count: towers.filter(t => t.radio === "LTE").length, icon: Activity },
-      { id: "GSM", label: "GSM", count: towers.filter(t => t.radio === "GSM").length, icon: Signal },
-      { id: "UMTS", label: "UMTS", count: towers.filter(t => t.radio === "UMTS").length, icon: BarChart3 }
+      { id: "all", label: "All Networks", count: filterCounts.networkType.all, icon: Wifi },
+      { id: "LTE", label: "LTE", count: filterCounts.networkType.LTE, icon: Activity },
+      { id: "GSM", label: "GSM", count: filterCounts.networkType.GSM, icon: Signal },
+      { id: "UMTS", label: "UMTS", count: filterCounts.networkType.UMTS, icon: BarChart3 }
     ],
     signalStrength: [
-      { id: "all", label: "All Signals", count: towers.length, icon: Signal },
-      { id: "excellent", label: "Excellent (-70dBm+)", count: towers.filter(t => t.averageSignal >= -70).length, level: "excellent" },
-      { id: "good", label: "Good (-80 to -70dBm)", count: towers.filter(t => t.averageSignal >= -80 && t.averageSignal < -70).length, level: "good" },
-      { id: "fair", label: "Fair (-90 to -80dBm)", count: towers.filter(t => t.averageSignal >= -90 && t.averageSignal < -80).length, level: "fair" },
-      { id: "poor", label: "Poor (< -90dBm)", count: towers.filter(t => t.averageSignal < -90).length, level: "poor" }
+      { id: "all", label: "All Signals", count: filterCounts.signalStrength.all, icon: Signal },
+      { id: "excellent", label: "Excellent (-70dBm+)", count: filterCounts.signalStrength.excellent, level: "excellent" },
+      { id: "good", label: "Good (-80 to -70dBm)", count: filterCounts.signalStrength.good, level: "good" },
+      { id: "fair", label: "Fair (-90 to -80dBm)", count: filterCounts.signalStrength.fair, level: "fair" },
+      { id: "poor", label: "Poor (< -90dBm)", count: filterCounts.signalStrength.poor, level: "poor" }
     ],
     country: [
-      { id: "all", label: "All Countries", count: towers.length, icon: MapPin },
-      { id: "655", label: "South Africa", count: towers.filter(t => t.mcc === 655).length, flag: "🇿🇦" },
-      { id: "262", label: "Germany", count: towers.filter(t => t.mcc === 262).length, flag: "🇩🇪" },
-      { id: "310", label: "United States", count: towers.filter(t => t.mcc === 310).length, flag: "🇺🇸" }
+      { id: "all", label: "All Countries", count: filterCounts.country.all, icon: MapPin },
+      { id: "655", label: "South Africa", count: filterCounts.country["655"], flag: "🇿🇦" },
+      { id: "262", label: "Germany", count: filterCounts.country["262"], flag: "🇩🇪" },
+      { id: "310", label: "United States", count: filterCounts.country["310"], flag: "🇺🇸" }
     ],
     samples: [
-      { id: "all", label: "Any Samples", count: towers.length, icon: Activity },
-      { id: "high", label: "High Samples (50+)", count: towers.filter(t => t.samples >= 50).length },
-      { id: "medium", label: "Medium (20-49)", count: towers.filter(t => t.samples >= 20 && t.samples < 50).length },
-      { id: "low", label: "Low (< 20)", count: towers.filter(t => t.samples < 20).length }
+      { id: "all", label: "Any Samples", count: filterCounts.samples.all, icon: Activity },
+      { id: "high", label: "High Samples (50+)", count: filterCounts.samples.high },
+      { id: "medium", label: "Medium (20-49)", count: filterCounts.samples.medium },
+      { id: "low", label: "Low (< 20)", count: filterCounts.samples.low }
     ]
-  };
+  }), [filterCounts]);
 
   // ON-CLICK FILTER FUNCTIONS THAT CALL API
   const handleFilterClick = useCallback(async (filterType: string, value: string) => {
@@ -259,13 +290,13 @@ const Dashboard: React.FC = () => {
     }));
   }, []);
 
-  // Apply all selected filters with one click
+  // Apply all selected filters with one click - CLIENT-SIDE ONLY (no API calls)
   const handleApplyFilters = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      let filteredData: CellTower[] = await fetchTowers();
+      let filteredData = [...towers]; // Start with all towers
 
       // Apply network type filter
       if (activeFilters.networkType !== "all") {
@@ -321,14 +352,13 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [activeFilters]);
+  }, [activeFilters, towers]);
 
   // Reset all filters
   const resetFilters = useCallback(async () => {
     try {
       setLoading(true);
-      const allTowers = await fetchTowers();
-      setFilteredTowers(allTowers);
+      setFilteredTowers(towers);
       
       const resetState = {
         networkType: "all",
@@ -347,21 +377,28 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [towers]);
 
-  // Handle search
+  // FIXED: Handle search - only filters when search is submitted or has minimum length
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     
-    if (!query.trim()) {
-      // If search is empty, show currently filtered towers
+    // Only apply search if query is long enough or empty
+    if (query.trim().length === 0) {
+      // Reset to current applied filters
+      handleApplyFilters();
+      return;
+    }
+
+    // Only search if query is at least 2 characters
+    if (query.trim().length < 2) {
       return;
     }
     
     try {
       setLoading(true);
       
-      const result = filteredTowers.filter(
+      const result = towers.filter(
         (t) =>
           t.radio.toLowerCase().includes(query.toLowerCase()) ||
           t.mcc.toString().includes(query) ||
@@ -376,7 +413,26 @@ const Dashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [filteredTowers]);
+  }, [towers, handleApplyFilters]);
+
+  // Debounced search to prevent too many re-renders
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+  
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+    
+    // Clear previous timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    
+    // Set new timeout for search execution
+    const newTimeout = setTimeout(() => {
+      handleSearch(query);
+    }, 500); // 500ms delay
+    
+    setSearchTimeout(newTimeout);
+  }, [searchTimeout, handleSearch]);
 
   const handleAnalysisComplete = useCallback((analysis: any) => {
     setAiAnalysis(analysis);
@@ -392,6 +448,15 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     loadTowers();
   }, [loadTowers]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  }, [searchTimeout]);
 
   // Count active filters
   const activeFilterCount = Object.values(activeFilters).filter(value => value !== "all").length;
@@ -655,7 +720,7 @@ const Dashboard: React.FC = () => {
                 type="text"
                 placeholder="Search towers, networks, or locations..."
                 value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 disabled={loading}
               />
             </div>

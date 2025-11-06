@@ -2,6 +2,42 @@
 Our MCP hackathon repo
 # 📡 Cell Tower Signal Intelligence API
 
+
+#video
+
+
+# 🎥 Project Demonstration
+
+> Watch our live demo of the **Cell Tower Signal Intelligence API & Dashboard**
+
+| Demo | Description |
+|------|--------------|
+| ▶️ [Demo 1 – API Overview](./06.11.2025_21.11.03_REC.mp4) | Introduction and system architecture |
+| ▶️ [Demo 2 – Frontend UI Walkthrough](./06.11.2025_21.14.35_REC.mp4) | Dashboard and interactive map |
+| ▶️ [Demo 3 – API + Map Integration](./06.11.2025_21.23.04_REC.mp4) | Real-time data and analytics demo |
+| ▶️ [Demo 4 – Final Showcase](./06.11.2025_21.45.11_REC.mp4) | Complete workflow and results summary |
+
+---
+
+# MCPHackathon
+Our MCP hackathon repo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 A comprehensive RESTful API for managing and analyzing cell tower data with advanced querying capabilities, geolocation filtering, and signal strength analytics.
 
 ## 🌟 Key Features
