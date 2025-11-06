@@ -2,7 +2,9 @@ Here’s a **clean, professional, and visually enhanced version** of your `READM
 
 You can replace your current `mcphackathon/frontend/frontend/README.md` with this file ⬇️
 
----
+---![Uploading 1-CELL-TOWER-POP-REG.PNG…]()
+<img width="1337" height="659" alt="23" src="https://github.com/user-attachments/assets/4d47df0d-a800-4722-ba2f-58afa21b26c1" />
+
 
 ````markdown
 # 📡 Network Analytics Dashboard
